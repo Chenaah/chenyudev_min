@@ -35,6 +35,32 @@
     nav .link-ux { text-underline-offset: 6px; }
     .dot { width:7px; height:7px; background:#111; border-radius:2px; outline:2px solid white; }
     @media (prefers-color-scheme: dark) { .dot{ background:#e5e7eb; outline-color:#0a0a0a; } }
+
+    /* Float Preview */
+    #float-preview {
+      position: fixed;
+      pointer-events: none;
+      z-index: 100;
+      opacity: 0;
+      transform: scale(0.9) translateY(10px);
+      transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      width: 480px; /* larger preview */
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 20px 50px -10px rgba(0,0,0,0.3);
+      border: 1px solid rgba(128,128,128,0.1);
+      background: var(--hover);
+      backdrop-filter: blur(8px);
+    }
+    #float-preview.visible {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+    #float-preview img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
   </style>
 </head>
 <body class="antialiased text-sm font-mono">
@@ -58,7 +84,7 @@
       <!-- Publications -->
       <div id="research" class="flex flex-col space-y-4">
         <!-- item -->
-        <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition" href="https://modularlegs.github.io/">
+        <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition" href="https://modularlegs.github.io/" data-thumbnail="thumbnails/modularlegs.png">
           <img src="portfolio/modularlegs_compressed.gif" alt="Metamachine demo" class="w-28 h-16 object-cover rounded shrink-0" />
           <div class="flex flex-col gap-1 flex-1 min-w-0">
             <div class="flex items-start gap-1 justify-between text-xs w-full">
@@ -75,7 +101,7 @@
           </div>
         </a>
 
-        <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition" href="#">
+        <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition" href="#" data-thumbnail="thumbnails/breaking.png">
           <img src="portfolio/breaking.gif" alt="Sim2Real demo" class="w-28 h-16 object-cover rounded shrink-0" />
           <div class="flex flex-col gap-1 flex-1 min-w-0">
             <div class="flex items-start gap-1 justify-between text-xs w-full">
@@ -92,7 +118,7 @@
           </div>
         </a>
 
-        <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition" href="https://ieeexplore.ieee.org/document/10802640/">
+        <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition" href="https://ieeexplore.ieee.org/document/10802640/" data-thumbnail="thumbnails/sideflip.png">
           <img src="portfolio/sideflip_compressed.gif" alt="GPT-2 Robot demo" class="w-28 h-16 object-cover rounded shrink-0" />
           <div class="flex flex-col gap-1 flex-1 min-w-0">
             <div class="flex items-start gap-1 justify-between text-xs w-full">
@@ -109,7 +135,7 @@
           </div>
         </a>
 
-        <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition" href="https://ieeexplore.ieee.org/document/10161034">
+        <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition" href="https://ieeexplore.ieee.org/document/10161034" data-thumbnail="thumbnails/eat.png">
           <img src="portfolio/eat_compressed.gif" alt="CapybaraRL demo" class="w-28 h-16 object-cover rounded shrink-0" />
           <div class="flex flex-col gap-1 flex-1 min-w-0">
             <div class="flex items-start gap-1 justify-between text-xs w-full">
@@ -128,7 +154,7 @@
 
 
 
-         <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition" href="https://chenaah.github.io/coco/">
+         <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition" href="https://chenaah.github.io/coco/" data-thumbnail="thumbnails/climb-table.png">
           <img src="portfolio/climb-table_compressed.gif" alt="CapybaraRL demo" class="w-28 h-16 object-cover rounded shrink-0" />
           <div class="flex flex-col gap-1 flex-1 min-w-0">
             <div class="flex items-start gap-1 justify-between text-xs w-full">
@@ -146,7 +172,7 @@
         </a>
 
 
-        <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition" href="https://chenaah.github.io/multimodal/">
+        <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition" href="https://chenaah.github.io/multimodal/" data-thumbnail="thumbnails/bipedwalk.png">
           <img src="portfolio/bipedwalk_compressed.gif" alt="CapybaraRL demo" class="w-28 h-16 object-cover rounded shrink-0" />
           <div class="flex flex-col gap-1 flex-1 min-w-0">
             <div class="flex items-start gap-1 justify-between text-xs w-full">
@@ -163,7 +189,9 @@
           </div>
         </a>
 
-
+        <a class="px-3 py-2 text-xs text-[var(--muted)] hover:text-[var(--fg)] transition" href="https://scholar.google.com.hk/citations?hl=en&user=vuLLJ5sAAAAJ">
+          More (Google Scholar) 
+        </a>
       </div>
       
 
@@ -202,6 +230,49 @@
       </footer>
     </div>
   </div>
+  <div id="float-preview"><img id="preview-img" src="" alt="" /></div>
+
+  <script>
+    // Cool mouse-following image preview
+    const items = document.querySelectorAll('#research > a');
+    const preview = document.getElementById('float-preview');
+    const previewImg = document.getElementById('preview-img');
+
+    items.forEach(item => {
+      const img = item.querySelector('img');
+      if (!img) return;
+
+      item.addEventListener('mouseenter', () => {
+        // Prefer data-thumbnail if available, otherwise fallback to img.src
+        const thumbUrl = item.dataset.thumbnail || img.src;
+        previewImg.src = thumbUrl;
+        preview.classList.add('visible');
+      });
+
+      item.addEventListener('mousemove', (e) => {
+        // center the preview horizontally on the cursor, displace vertically
+        // Get preview width to center it
+        const previewWidth = preview.offsetWidth;
+        
+        let x = e.clientX; 
+        let y = e.clientY + 20;
+
+        // Check for right edge collision
+        if (x + previewWidth/2 > window.innerWidth) {
+            x = window.innerWidth - previewWidth/2 - 20;
+        } else if (x - previewWidth/2 < 0) {
+            x = previewWidth/2 + 20;
+        }
+
+        preview.style.left = x + 'px';
+        preview.style.top = y + 'px';
+      });
+
+      item.addEventListener('mouseleave', () => {
+        preview.classList.remove('visible');
+      });
+    });
+  </script>
   <script>document.getElementById('y').textContent = new Date().getFullYear()</script>
 </body>
 </html>
