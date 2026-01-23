@@ -1,40 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-FG19XELDWX"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
 
     gtag('config', 'G-FG19XELDWX');
   </script>
-  
+
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Chen Yu - Sequential Models for Universal Locomotion Control and Generative Models for Robot Design.</title>
-  <meta name="description" content="Bringing general-purpose AI into the physical world via modular robots, learning, and open-source tools." />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>C</text></svg>">
+  <meta name="description"
+    content="Bringing general-purpose AI into the physical world via modular robots, learning, and open-source tools." />
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>C</text></svg>">
   <!-- Tailwind via CDN for quick preview; replace with your build later if needed -->
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root {
-      --fg: #0a0a0a; --muted:#6b7280; --line:#d1d5db; --hover:#f8fafc;
+      --fg: #0a0a0a;
+      --muted: #6b7280;
+      --line: #d1d5db;
+      --hover: #f8fafc;
     }
+
     @media (prefers-color-scheme: dark) {
-      :root { --fg:#e5e7eb; --muted:#a1a1aa; --line:#262626; --hover:rgba(255,255,255,0.04); }
-      body { background:#0a0a0a; }
+      :root {
+        --fg: #e5e7eb;
+        --muted: #a1a1aa;
+        --line: #262626;
+        --hover: rgba(255, 255, 255, 0.04);
+      }
+
+      body {
+        background: #0a0a0a;
+      }
     }
-    body { 
-      color:var(--fg); 
+
+    body {
+      color: var(--fg);
       background: rgb(245, 244, 239);
     }
-    .link-ux { text-decoration: underline; text-underline-offset: 3px; }
-    .link-ux:hover { text-decoration-thickness: 2px; }
-    nav .link-ux { text-underline-offset: 6px; }
-    .dot { width:7px; height:7px; background:#111; border-radius:2px; outline:2px solid white; }
-    @media (prefers-color-scheme: dark) { .dot{ background:#e5e7eb; outline-color:#0a0a0a; } }
+
+    .link-ux {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .link-ux:hover {
+      text-decoration-thickness: 2px;
+    }
+
+    nav .link-ux {
+      text-underline-offset: 6px;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      background: #111;
+      border-radius: 2px;
+      outline: 2px solid white;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .dot {
+        background: #e5e7eb;
+        outline-color: #0a0a0a;
+      }
+    }
 
     /* Float Preview */
     #float-preview {
@@ -44,25 +83,44 @@
       opacity: 0;
       transform: scale(0.9) translateY(10px);
       transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      width: 480px; /* larger preview */
+      width: 480px;
+      /* larger preview */
       border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 20px 50px -10px rgba(0,0,0,0.3);
-      border: 1px solid rgba(128,128,128,0.1);
+      box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(128, 128, 128, 0.1);
       background: var(--hover);
       backdrop-filter: blur(8px);
     }
+
     #float-preview.visible {
       opacity: 1;
       transform: scale(1) translateY(0);
     }
+
     #float-preview img {
       width: 100%;
       height: auto;
       display: block;
     }
+
+    /* View Carousel */
+    #views-container {
+      transition: height 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      width: 100%;
+    }
+
+    #views-track {
+      width: 100%;
+    }
+
+    .view-slide {
+      width: 100%;
+      flex-shrink: 0;
+    }
   </style>
 </head>
+
 <body class="antialiased text-sm font-mono">
   <div class="p-4 md:p-12 overflow-hidden">
     <div class="w-full max-w-xl">
@@ -70,137 +128,365 @@
       <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <a class="text-3xl font-serif" href="#home">Chen Yu</a>
         <nav class="flex gap-4">
-          <a class="link-ux hover:text-inherit" href="#research">Research</a>
-          <a class="link-ux hover:text-inherit" href="#software">Software</a>
-          <a class="link-ux hover:text-inherit" href="#contact">Art</a>
+          <a class="link-ux hover:text-inherit cursor-pointer" onclick="switchTab('research', event)"
+            id="nav-research">Research</a>
+          <a class="link-ux hover:text-inherit cursor-pointer" onclick="switchTab('software', event)"
+            id="nav-software">Software</a>
+          <a class="link-ux hover:text-inherit cursor-pointer" onclick="switchTab('art', event)" id="nav-art">Art</a>
         </nav>
       </header>
 
-      <!-- Intro -->
-      <p id="home" class="mt-8 mb-8 text-[13px] leading-6 text-neutral-600 dark:text-neutral-400 font-normal not-italic font-sans">
-        I am a PhD student at Northwestern University (advised by Prof. <a class="link-ux hover:text-inherit" href="https://www.mccormick.northwestern.edu/research-faculty/directory/profiles/kriegman-sam.html">Sam Kriegman</a>) and founder of <a class="link-ux hover:text-inherit" href="https://yodamayda.com/">Yodamayda Robotics</a>. My research focuses on sequential models for universal locomotion control and generative models for robot design. A full list of my publications is available on <a class="link-ux hover:text-inherit" href="https://scholar.google.com.hk/citations?hl=en&user=vuLLJ5sAAAAJ">Google Scholar</a>, and all software projects can be found on <a class="link-ux hover:text-inherit" href="https://github.com/Chenaah/">GitHub</a>.
-      </p>
+      <!-- Views Container -->
+      <div id="views-container" class="overflow-hidden relative">
+        <div id="views-track"
+          class="flex items-start transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]">
 
-      <!-- Publications -->
-      <div id="research" class="flex flex-col space-y-4">
-        <!-- item -->
-        <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition" href="https://modularlegs.github.io/" data-thumbnail="thumbnails/modularlegs.png">
-          <img src="portfolio/modularlegs_compressed.gif" alt="Metamachine demo" class="w-28 h-16 object-cover rounded shrink-0" />
-          <div class="flex flex-col gap-1 flex-1 min-w-0">
-            <div class="flex items-start gap-1 justify-between text-xs w-full">
-              <div class="flex items-baseline gap-2 grow">
-                <div class="font-semibold" title="Agile modular legged robots with VAE+BO for morphology optimization and RL+Transformer for morphology-agnostic locomotion control.">
-                  Agile modular legged robots
+          <!-- View: Research -->
+          <div id="view-research" class="view-slide shrink-0">
+            <!-- Intro -->
+            <p id="home"
+              class="mt-8 mb-8 text-[13px] leading-6 text-neutral-600 dark:text-neutral-400 font-normal not-italic font-sans">
+              I am a PhD student at Northwestern University (advised by Prof. <a class="link-ux hover:text-inherit"
+                href="https://www.mccormick.northwestern.edu/research-faculty/directory/profiles/kriegman-sam.html">Sam
+                Kriegman</a>) and founder of <a class="link-ux hover:text-inherit"
+                href="https://yodamayda.com/">Yodamayda Robotics</a>, with over five years of hands-on experience in legged robot sim-to-real transfer. My current research focuses on sequential models for
+              universal locomotion control and generative models for robot design. A full list of my publications is
+              available on <a class="link-ux hover:text-inherit"
+                href="https://scholar.google.com.hk/citations?hl=en&user=vuLLJ5sAAAAJ">Google Scholar</a>, and all
+              software projects can be found on <a class="link-ux hover:text-inherit"
+                href="https://github.com/Chenaah/">GitHub</a>.
+            </p>
+
+            <!-- Publications -->
+            <div id="research" class="flex flex-col space-y-4">
+              <!-- item -->
+              <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition"
+                href="https://modularlegs.github.io/" data-thumbnail="thumbnails/modularlegs.png">
+                <img src="portfolio/modularlegs_compressed.gif" alt="Metamachine demo"
+                  class="w-28 h-16 object-cover rounded shrink-0" />
+                <div class="flex flex-col gap-1 flex-1 min-w-0">
+                  <div class="flex items-start gap-1 justify-between text-xs w-full">
+                    <div class="flex items-baseline gap-2 grow">
+                      <div class="font-semibold"
+                        title="Agile modular legged robots with VAE+BO for morphology optimization and RL+Transformer for morphology-agnostic locomotion control.">
+                        Agile modular legged robots
+                      </div>
+                    </div>
+                    <div class="text-xs text-[var(--muted)] whitespace-nowrap shrink-0">PNAS, 2026</div>
+                  </div>
+                  <div class="text-xs text-[var(--muted)]">
+                    with VAE+BO for morphology optimization and RL+Transformer for morphology-agnostic locomotion
+                    control. This is the first agile modular legged robot.
+                  </div>
                 </div>
-              </div>
-              <div class="text-xs text-[var(--muted)] whitespace-nowrap shrink-0">PNAS, 2026</div>
-            </div>
-            <div class="text-xs text-[var(--muted)]">
-              with VAE+BO for morphology optimization and RL+Transformer for morphology-agnostic locomotion control. This is the first agile modular legged robot.
+              </a>
+
+              <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition" href="#"
+                data-thumbnail="thumbnails/breaking.png">
+                <img src="portfolio/breaking.gif" alt="Sim2Real demo" class="w-28 h-16 object-cover rounded shrink-0" />
+                <div class="flex flex-col gap-1 flex-1 min-w-0">
+                  <div class="flex items-start gap-1 justify-between text-xs w-full">
+                    <div class="flex items-baseline gap-2 grow">
+                      <div class="font-semibold" title="Sim2Real Kit">
+                        Self-destruction of legged robots
+                      </div>
+                    </div>
+                    <div class="text-xs text-[var(--muted)] whitespace-nowrap shrink-0">Submitted, 2025</div>
+                  </div>
+                  <div class="text-xs text-[var(--muted)]">
+                    The policy learns to efficiently self-destruct and move forward. This is the first demonstration of
+                    a robot automatically changing designs on the fly.
+                  </div>
+                </div>
+              </a>
+
+              <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition"
+                href="https://ieeexplore.ieee.org/document/10802640/" data-thumbnail="thumbnails/sideflip.png">
+                <img src="portfolio/sideflip_compressed.gif" alt="GPT-2 Robot demo"
+                  class="w-28 h-16 object-cover rounded shrink-0" />
+                <div class="flex flex-col gap-1 flex-1 min-w-0">
+                  <div class="flex items-start gap-1 justify-between text-xs w-full">
+                    <div class="flex items-baseline gap-2 grow">
+                      <div class="font-semibold" title="Learning to jump / backflip / sideflip">
+                        Learning to jump / backflip / sideflip
+                      </div>
+                    </div>
+                    <div class="text-xs text-[var(--muted)] whitespace-nowrap shrink-0">IROS, 2024</div>
+                  </div>
+                  <div class="text-xs text-[var(--muted)]">
+                    with a Transformer-based state estimator for prediction of robot height and velocity. This is the
+                    first demonstration of quadrupedal sideflips.
+                  </div>
+                </div>
+              </a>
+
+              <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition"
+                href="https://ieeexplore.ieee.org/document/10161034" data-thumbnail="thumbnails/eat.png">
+                <img src="portfolio/eat_compressed.gif" alt="CapybaraRL demo"
+                  class="w-28 h-16 object-cover rounded shrink-0" />
+                <div class="flex flex-col gap-1 flex-1 min-w-0">
+                  <div class="flex items-start gap-1 justify-between text-xs w-full">
+                    <div class="flex items-baseline gap-2 grow">
+                      <div class="font-semibold" title="CapybaraRL — Open Source">
+                        Learning to walk with changing shapes
+                      </div>
+                    </div>
+                    <div class="text-xs text-[var(--muted)] whitespace-nowrap shrink-0">ICRA, 2023</div>
+                  </div>
+                  <div class="text-xs text-[var(--muted)]">
+                    using morphology-conditioned Transformer. This is the first Transformer-based universal controller
+                    on a real robot.
+                  </div>
+                </div>
+              </a>
+
+              <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition"
+                href="https://chenaah.github.io/coco/" data-thumbnail="thumbnails/climb-table.png">
+                <img src="portfolio/climb-table_compressed.gif" alt="CapybaraRL demo"
+                  class="w-28 h-16 object-cover rounded shrink-0" />
+                <div class="flex flex-col gap-1 flex-1 min-w-0">
+                  <div class="flex items-start gap-1 justify-between text-xs w-full">
+                    <div class="flex items-baseline gap-2 grow">
+                      <div class="font-semibold" title="CapybaraRL — Open Source">
+                        A quadruped robot climbing tables
+                      </div>
+                    </div>
+                    <div class="text-xs text-[var(--muted)] whitespace-nowrap shrink-0">RA-L, 2022</div>
+                  </div>
+                  <div class="text-xs text-[var(--muted)]">
+                    using Bayesian optimization. The robot is trained in the real world without simulation.
+                  </div>
+                </div>
+              </a>
+
+              <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition"
+                href="https://chenaah.github.io/multimodal/" data-thumbnail="thumbnails/bipedwalk.png">
+                <img src="portfolio/bipedwalk_compressed.gif" alt="CapybaraRL demo"
+                  class="w-28 h-16 object-cover rounded shrink-0" />
+                <div class="flex flex-col gap-1 flex-1 min-w-0">
+                  <div class="flex items-start gap-1 justify-between text-xs w-full">
+                    <div class="flex items-baseline gap-2 grow">
+                      <div class="font-semibold" title="CapybaraRL — Open Source">
+                        A quadruped robot walking bipedally
+                      </div>
+                    </div>
+                    <div class="text-xs text-[var(--muted)] whitespace-nowrap shrink-0">RA-L, 2022</div>
+                  </div>
+                  <div class="text-xs text-[var(--muted)]">
+                    using RL and hardware modifications. This is the first demonstration of a modern quadruped robot
+                    walking bipedally.
+                  </div>
+                </div>
+              </a>
+
+              <a class="px-3 py-2 text-xs text-[var(--muted)] hover:text-[var(--fg)] transition"
+                href="https://scholar.google.com.hk/citations?hl=en&user=vuLLJ5sAAAAJ">
+                More (Google Scholar)
+              </a>
             </div>
           </div>
-        </a>
 
-        <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition" href="#" data-thumbnail="thumbnails/breaking.png">
-          <img src="portfolio/breaking.gif" alt="Sim2Real demo" class="w-28 h-16 object-cover rounded shrink-0" />
-          <div class="flex flex-col gap-1 flex-1 min-w-0">
-            <div class="flex items-start gap-1 justify-between text-xs w-full">
-              <div class="flex items-baseline gap-2 grow">
-                <div class="font-semibold" title="Sim2Real Kit">
-                  Self-destruction of legged robots
+          <!-- View: Software -->
+          <div id="view-software" class="view-slide shrink-0">
+            <!-- Intro Software -->
+            <p
+              class="mt-8 mb-8 text-[13px] leading-6 text-neutral-600 dark:text-neutral-400 font-normal not-italic font-sans">
+              I maintain several open-source libraries focused on robot control, simulation, and learning. Most of my
+              work is public by default. Check out my <a class="link-ux hover:text-inherit"
+                href="https://github.com/Chenaah/">GitHub</a>.
+            </p>
+
+            <!-- Software List -->
+            <div class="flex flex-col space-y-4">
+
+              <!-- Item 1 -->
+              <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition"
+                href="https://github.com/Chenaah/Metamachine/" data-thumbnail="thumbnails/bipedwalk.png">
+                <img src="capybaras/dance.jpg" alt="CapybaraRL demo"
+                  class="w-28 h-16 object-cover rounded shrink-0" />
+                <div class="flex flex-col gap-1 flex-1 min-w-0">
+                  <div class="flex items-start gap-1 justify-between text-xs w-full">
+                    <div class="flex items-baseline gap-2 grow">
+                      <div class="font-semibold" title="CapybaraRL — Open Source">
+                        MetaMachine
+                      </div>
+                    </div>
+                    <div class="text-xs text-[var(--muted)] whitespace-nowrap shrink-0">2025</div>
+                  </div>
+                  <div class="text-xs text-[var(--muted)]">
+                    A simulation framework for modular robots, designed to accelerate research in robot learning and evolutionary robotics.
+                  </div>
                 </div>
-              </div>
-              <div class="text-xs text-[var(--muted)] whitespace-nowrap shrink-0">Submitted, 2025</div>
-            </div>
-            <div class="text-xs text-[var(--muted)]">
-              The policy learns to efficiently self-destruct and move forward. This is the first demonstration of a robot automatically changing designs on the fly.
+              </a>
+
+              <!-- Item 2 -->
+              <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition"
+                href="https://github.com/Chenaah/Capybarish" data-thumbnail="thumbnails/bipedwalk.png">
+                <img src="capybaras/talk.jpg" alt="CapybaraRL demo"
+                  class="w-28 h-16 object-cover rounded shrink-0" />
+                <div class="flex flex-col gap-1 flex-1 min-w-0">
+                  <div class="flex items-start gap-1 justify-between text-xs w-full">
+                    <div class="flex items-baseline gap-2 grow">
+                      <div class="font-semibold" title="CapybaraRL — Open Source">
+                        Capybarish
+                      </div>
+                    </div>
+                    <div class="text-xs text-[var(--muted)] whitespace-nowrap shrink-0">2025</div>
+                  </div>
+                  <div class="text-xs text-[var(--muted)]">
+                    Capybarish is a lightweight ROS-like communication middleware designed for cloud-based robotics controllers.
+                  </div>
+                </div>
+              </a>
+
+
+              <!-- Item 3 -->
+              <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition"
+                href="https://github.com/Chenaah/CapyRL" data-thumbnail="thumbnails/bipedwalk.png">
+                <img src="capybaras/workout.jpg" alt="CapybaraRL demo"
+                  class="w-28 h-16 object-cover rounded shrink-0" />
+                <div class="flex flex-col gap-1 flex-1 min-w-0">
+                  <div class="flex items-start gap-1 justify-between text-xs w-full">
+                    <div class="flex items-baseline gap-2 grow">
+                      <div class="font-semibold" title="CapybaraRL — Open Source">
+                        CapyRL
+                      </div>
+                    </div>
+                    <div class="text-xs text-[var(--muted)] whitespace-nowrap shrink-0">2025</div>
+                  </div>
+                  <div class="text-xs text-[var(--muted)]">
+                    CapyRL is a lightweight JAX-based reinforcement learning library that finds the sweet spot between research-friendly and production-ready codebases.
+                  </div>
+                </div>
+              </a>
+
+               <!-- Item 4 -->
+              <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition"
+                href="https://github.com/Chenaah/CapyPIV" data-thumbnail="thumbnails/bipedwalk.png">
+                <img src="capybaras/microscope.jpg" alt="CapybaraRL demo"
+                  class="w-28 h-16 object-cover rounded shrink-0" />
+                <div class="flex flex-col gap-1 flex-1 min-w-0">
+                  <div class="flex items-start gap-1 justify-between text-xs w-full">
+                    <div class="flex items-baseline gap-2 grow">
+                      <div class="font-semibold" title="CapybaraRL — Open Source">
+                        CapyPIV
+                      </div>
+                    </div>
+                    <div class="text-xs text-[var(--muted)] whitespace-nowrap shrink-0">2025</div>
+                  </div>
+                  <div class="text-xs text-[var(--muted)]">
+                    CapyPIV is a simple web application for performing Particle Image Velocimetry (PIV) analysis using OpenPIV.
+                  </div>
+                </div>
+              </a>
+
+
+              <!-- Item 5 -->
+              <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition"
+                href="https://github.com/Chenaah/CapyFormer" data-thumbnail="thumbnails/bipedwalk.png">
+                <img src="capybaras/writing.jpg" alt="CapybaraRL demo"
+                  class="w-28 h-16 object-cover rounded shrink-0" />
+                <div class="flex flex-col gap-1 flex-1 min-w-0">
+                  <div class="flex items-start gap-1 justify-between text-xs w-full">
+                    <div class="flex items-baseline gap-2 grow">
+                      <div class="font-semibold" title="CapybaraRL — Open Source">
+                        CapyFormer
+                      </div>
+                    </div>
+                    <div class="text-xs text-[var(--muted)] whitespace-nowrap shrink-0">2025</div>
+                  </div>
+                  <div class="text-xs text-[var(--muted)]">
+                    A lightweight Transformer library for locomotion control.
+                  </div>
+                </div>
+              </a>
+
+              <!-- Item 6 -->
+              <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition"
+                href="https://github.com/Chenaah/CapyVAE" data-thumbnail="thumbnails/bipedwalk.png">
+                <img src="capybaras/fit.jpg" alt="CapybaraRL demo"
+                  class="w-28 h-16 object-cover rounded shrink-0" />
+                <div class="flex flex-col gap-1 flex-1 min-w-0">
+                  <div class="flex items-start gap-1 justify-between text-xs w-full">
+                    <div class="flex items-baseline gap-2 grow">
+                      <div class="font-semibold" title="CapybaraRL — Open Source">
+                        CapyVAE
+                      </div>
+                    </div>
+                    <div class="text-xs text-[var(--muted)] whitespace-nowrap shrink-0">2025</div>
+                  </div>
+                  <div class="text-xs text-[var(--muted)]">
+                    A simple, flexible VAE (Variational Autoencoder) library for design optimization.
+                  </div>
+                </div>
+              </a>
+
+
+              <!-- Item 3 -->
+              <!-- <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition"
+                href="https://github.com/Chenaah/minimal-rl">
+                <div
+                  class="w-16 h-12 flex items-center justify-center bg-[var(--line)] rounded text-xs font-mono text-[var(--muted)] shrink-0">
+                  RL
+                </div>
+                <div class="flex flex-col gap-1 flex-1 min-w-0">
+                  <div class="flex items-start gap-1 justify-between text-xs w-full">
+                    <div class="font-semibold">Minimal-RL</div>
+                    <div class="text-xs text-[var(--muted)]">2022</div>
+                  </div>
+                  <div class="text-xs text-[var(--muted)]">
+                    Single-file implementations of PPO, SAC, and TD3 for educational purposes. CleanRL style but even
+                    simpler.
+                  </div>
+                </div>
+              </a> -->
+
+              <a class="px-3 py-2 text-xs text-[var(--muted)] hover:text-[var(--fg)] transition"
+                href="https://github.com/Chenaah">
+                More (GitHub)
+              </a>
+
             </div>
           </div>
-        </a>
 
-        <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition" href="https://ieeexplore.ieee.org/document/10802640/" data-thumbnail="thumbnails/sideflip.png">
-          <img src="portfolio/sideflip_compressed.gif" alt="GPT-2 Robot demo" class="w-28 h-16 object-cover rounded shrink-0" />
-          <div class="flex flex-col gap-1 flex-1 min-w-0">
-            <div class="flex items-start gap-1 justify-between text-xs w-full">
-              <div class="flex items-baseline gap-2 grow">
-                <div class="font-semibold" title="Learning to jump / backflip / sideflip">
-                  Learning to jump / backflip / sideflip
+          <!-- View: Art -->
+          <div id="view-art" class="view-slide shrink-0">
+            <!-- Intro Art -->
+            <p
+              class="mt-8 mb-8 text-[13px] leading-6 text-neutral-600 dark:text-neutral-400 font-normal not-italic font-sans">
+              As I conduct research, I also reflect on research itself, and on the question of human meaning. At times, research appears to be little more than a game we play to make existence feel justified. How to survive within such an absurd structure remains an open question to me. This space will be used to gather my thoughts and related artistic works.
+            </p>
+
+            <!-- Art List -->
+            <!-- <div class="flex flex-col space-y-4">
+              <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition" href="#">
+                <div
+                  class="w-16 h-12 flex items-center justify-center bg-[var(--line)] rounded text-xs font-mono text-[var(--muted)] shrink-0">
+                  Gen
                 </div>
-              </div>
-              <div class="text-xs text-[var(--muted)] whitespace-nowrap shrink-0">IROS, 2024</div>
-            </div>
-            <div class="text-xs text-[var(--muted)]">
-              with a Transformer-based state estimator for prediction of robot height and velocity. This is the first demonstration of quadrupedal sideflips.
-            </div>
-          </div>
-        </a>
-
-        <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition" href="https://ieeexplore.ieee.org/document/10161034" data-thumbnail="thumbnails/eat.png">
-          <img src="portfolio/eat_compressed.gif" alt="CapybaraRL demo" class="w-28 h-16 object-cover rounded shrink-0" />
-          <div class="flex flex-col gap-1 flex-1 min-w-0">
-            <div class="flex items-start gap-1 justify-between text-xs w-full">
-              <div class="flex items-baseline gap-2 grow">
-                <div class="font-semibold" title="CapybaraRL — Open Source">
-                  Learning to walk with changing shapes
+                <div class="flex flex-col gap-1 flex-1 min-w-0">
+                  <div class="flex items-start gap-1 justify-between text-xs w-full">
+                    <div class="font-semibold">Generative Sketches</div>
+                    <div class="text-xs text-[var(--muted)]">2024</div>
+                  </div>
+                  <div class="text-xs text-[var(--muted)]">
+                    Procedural generation sketches using p5.js and WebGL.
+                  </div>
                 </div>
-              </div>
-              <div class="text-xs text-[var(--muted)] whitespace-nowrap shrink-0">ICRA, 2023</div>
-            </div>
-            <div class="text-xs text-[var(--muted)]">
-              using morphology-conditioned Transformer. This is the first Transformer-based universal controller on a real robot.
-            </div>
+              </a>
+            </div> -->
           </div>
-        </a>
 
-
-
-         <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition" href="https://chenaah.github.io/coco/" data-thumbnail="thumbnails/climb-table.png">
-          <img src="portfolio/climb-table_compressed.gif" alt="CapybaraRL demo" class="w-28 h-16 object-cover rounded shrink-0" />
-          <div class="flex flex-col gap-1 flex-1 min-w-0">
-            <div class="flex items-start gap-1 justify-between text-xs w-full">
-              <div class="flex items-baseline gap-2 grow">
-                <div class="font-semibold" title="CapybaraRL — Open Source">
-                  A quadruped robot climbing tables
-                </div>
-              </div>
-              <div class="text-xs text-[var(--muted)] whitespace-nowrap shrink-0">RA-L, 2022</div>
-            </div>
-            <div class="text-xs text-[var(--muted)]">
-              using Bayesian optimization. The robot is trained in the real world without simulation.
-            </div>
-          </div>
-        </a>
-
-
-        <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition" href="https://chenaah.github.io/multimodal/" data-thumbnail="thumbnails/bipedwalk.png">
-          <img src="portfolio/bipedwalk_compressed.gif" alt="CapybaraRL demo" class="w-28 h-16 object-cover rounded shrink-0" />
-          <div class="flex flex-col gap-1 flex-1 min-w-0">
-            <div class="flex items-start gap-1 justify-between text-xs w-full">
-              <div class="flex items-baseline gap-2 grow">
-                <div class="font-semibold" title="CapybaraRL — Open Source">
-                  A quadruped robot walking bipedally
-                </div>
-              </div>
-              <div class="text-xs text-[var(--muted)] whitespace-nowrap shrink-0">RA-L, 2022</div>
-            </div>
-            <div class="text-xs text-[var(--muted)]">
-              using RL and hardware modifications. This is the first demonstration of a modern quadruped robot walking bipedally.
-            </div>
-          </div>
-        </a>
-
-        <a class="px-3 py-2 text-xs text-[var(--muted)] hover:text-[var(--fg)] transition" href="https://scholar.google.com.hk/citations?hl=en&user=vuLLJ5sAAAAJ">
-          More (Google Scholar) 
-        </a>
+        </div>
       </div>
-      
 
 
-     
-      </div>
 
-      <!-- Writing -->
-      <!-- <h2 id="writing" class="font-bold mt-8 mb-2 font-sans text-[13px] tracking-wide">Writing</h2>
+
+    </div>
+
+    <!-- Writing -->
+    <!-- <h2 id="writing" class="font-bold mt-8 mb-2 font-sans text-[13px] tracking-wide">Writing</h2>
       <div class="rounded border p-4" style="border-color:var(--line)">
         <p class="text-[13px] leading-6 text-neutral-600 dark:text-neutral-400 font-sans">
           I publish research logs, reproduction notes, and thoughts on turning research into reusable, product-grade tools.
@@ -208,8 +494,8 @@
         </p>
       </div> -->
 
-      <!-- Contact -->
-      <!-- <h2 id="contact" class="font-bold mt-8 mb-2 font-sans text-[13px] tracking-wide">Contact</h2>
+    <!-- Contact -->
+    <!-- <h2 id="contact" class="font-bold mt-8 mb-2 font-sans text-[13px] tracking-wide">Contact</h2>
       <div class="grid gap-3 sm:grid-cols-2">
         <a href="mailto:chen@example.com" class="rounded border p-4 hover:bg-[var(--hover)] transition" style="border-color:var(--line)">
           <div class="font-semibold">Email</div>
@@ -221,14 +507,15 @@
         </a>
       </div> -->
 
-      <!-- Footer -->
-      <footer>
-        <div class="w-full mx-auto flex justify-between py-6 items-baseline border-t mt-12" style="border-color:var(--fg)">
-          <p class="font-serif text-lg">Chen Yu</p>
-          <!-- <div class="text-[12px] text-[var(--muted)]">© <span id="y"></span> — Minimal portfolio</div> -->
-        </div>
-      </footer>
-    </div>
+    <!-- Footer -->
+    <footer>
+      <div class="w-full mx-auto flex justify-between py-6 items-baseline border-t mt-12"
+        style="border-color:var(--fg)">
+        <p class="font-serif text-lg">Chen Yu</p>
+        <!-- <div class="text-[12px] text-[var(--muted)]">© <span id="y"></span> — Minimal portfolio</div> -->
+      </div>
+    </footer>
+  </div>
   </div>
   <div id="float-preview"><img id="preview-img" src="" alt="" /></div>
 
@@ -253,15 +540,15 @@
         // center the preview horizontally on the cursor, displace vertically
         // Get preview width to center it
         const previewWidth = preview.offsetWidth;
-        
-        let x = e.clientX; 
+
+        let x = e.clientX;
         let y = e.clientY + 20;
 
         // Check for right edge collision
-        if (x + previewWidth/2 > window.innerWidth) {
-            x = window.innerWidth - previewWidth/2 - 20;
-        } else if (x - previewWidth/2 < 0) {
-            x = previewWidth/2 + 20;
+        if (x + previewWidth / 2 > window.innerWidth) {
+          x = window.innerWidth - previewWidth / 2 - 20;
+        } else if (x - previewWidth / 2 < 0) {
+          x = previewWidth / 2 + 20;
         }
 
         preview.style.left = x + 'px';
@@ -273,6 +560,71 @@
       });
     });
   </script>
-  <script>document.getElementById('y').textContent = new Date().getFullYear()</script>
+  <script>
+    // Tab Switching Logic
+    let currentTab = 'research';
+
+    function switchTab(tab, event) {
+      if (event) event.preventDefault();
+      if (currentTab === tab) return;
+      currentTab = tab;
+
+      const track = document.getElementById('views-track');
+      const container = document.getElementById('views-container');
+      const researchView = document.getElementById('view-research');
+      const softwareView = document.getElementById('view-software');
+      const artView = document.getElementById('view-art');
+
+      // Handle Nav State
+      const navResearch = document.getElementById('nav-research');
+      const navSoftware = document.getElementById('nav-software');
+      const navArt = document.getElementById('nav-art');
+
+      // Reset all navs
+      [navResearch, navSoftware, navArt].forEach(nav => {
+        if (nav) nav.style.textDecorationLine = 'none';
+      });
+
+      // Activate current
+      const activeNav = document.getElementById('nav-' + tab);
+      if (activeNav) {
+        activeNav.style.textDecorationLine = 'underline';
+        activeNav.style.textDecorationThickness = '2px';
+      }
+
+      // Slide and Height
+      if (tab === 'software') {
+        track.style.transform = 'translateX(-100%)';
+        container.style.height = softwareView.offsetHeight + 'px';
+      } else if (tab === 'art') {
+        track.style.transform = 'translateX(-200%)';
+        container.style.height = artView.offsetHeight + 'px';
+      } else {
+        track.style.transform = 'translateX(0%)';
+        container.style.height = researchView.offsetHeight + 'px';
+      }
+    }
+
+    // Initialize Height
+    window.addEventListener('load', () => {
+      const researchView = document.getElementById('view-research');
+      const container = document.getElementById('views-container');
+      container.style.height = researchView.offsetHeight + 'px';
+    });
+
+    // Handle Window Resize (recalculate height)
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        const activeView = document.getElementById('view-' + currentTab);
+        const container = document.getElementById('views-container');
+        container.style.height = activeView.offsetHeight + 'px';
+      }, 100);
+    });
+
+    document.getElementById('y').textContent = new Date().getFullYear();
+  </script>
 </body>
+
 </html>
