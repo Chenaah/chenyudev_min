@@ -14,9 +14,9 @@
 
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Chen Yu - Sequential Models for Universal Locomotion Control and Generative Models for Robot Design.</title>
+  <title>Chen Yu | Building the Future of General-Purpose Legged Robots</title>
   <meta name="description"
-    content="Bringing general-purpose AI into the physical world via modular robots, learning, and open-source tools." />
+    content="Building general-purpose legged robots through learning-based control, robot design, and sim-to-real research." />
   <link rel="icon"
     href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>C</text></svg>">
   <!-- Tailwind via CDN for quick preview; replace with your build later if needed -->
@@ -42,9 +42,16 @@
       }
     }
 
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
     body {
       color: var(--fg);
-      background: rgb(245, 244, 239);
+      background: #111;
+      margin: 0;
     }
 
     .link-ux {
@@ -118,15 +125,192 @@
       width: 100%;
       flex-shrink: 0;
     }
+
+    .page-shell {
+      position: relative;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .video-rail {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .content-column {
+      position: relative;
+      z-index: 1;
+      padding: 1rem;
+      background: rgba(245, 244, 239, 0.86);
+      backdrop-filter: blur(28px) saturate(1.2);
+      -webkit-backdrop-filter: blur(28px) saturate(1.2);
+      box-shadow: -24px 0 80px rgba(0, 0, 0, 0.18);
+    }
+
+    .video-stage {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #111;
+    }
+
+    .video-stage video {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .video-intro {
+      position: fixed;
+      left: clamp(1.5rem, 4vw, 4rem);
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 1;
+      display: flex;
+      align-items: flex-start;
+      gap: clamp(1rem, 2vw, 1.75rem);
+      max-width: min(44rem, 48vw);
+      color: white;
+      text-shadow: 0 2px 24px rgba(0, 0, 0, 0.55);
+      pointer-events: none;
+    }
+
+    .intro-avatar {
+      width: clamp(6rem, 9vw, 8.75rem);
+      margin-top: 0.15rem;
+      aspect-ratio: 1;
+      flex: 0 0 auto;
+      border-radius: 999px;
+      object-fit: cover;
+      mix-blend-mode: multiply;
+      filter: contrast(1.08) saturate(1.08);
+      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.18);
+      transform: rotate(var(--avatar-rotation, 0deg));
+      transform-origin: 50% 58%;
+      transition: transform 1100ms cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: transform;
+      pointer-events: auto;
+    }
+
+    .intro-avatar.is-spinning {
+      animation: avatar-spin 260ms linear infinite;
+    }
+
+    @keyframes avatar-spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .video-intro p {
+      margin-top: 0.75rem;
+      color: rgba(255, 255, 255, 0.78);
+    }
+
+    .typing-line {
+      min-height: 4.8rem;
+      font-size: clamp(1.25rem, 2.1vw, 2rem);
+      line-height: 1.25;
+    }
+
+    .typing-cursor {
+      display: inline-block;
+      width: 0.08em;
+      height: 0.9em;
+      margin-left: 0.12em;
+      transform: translateY(0.12em);
+      background: currentColor;
+      animation: cursor-blink 1s steps(2, start) infinite;
+    }
+
+    @keyframes cursor-blink {
+      50% {
+        opacity: 0;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .typing-cursor {
+        animation: none;
+      }
+
+      .intro-avatar {
+        animation: none;
+        transition: none;
+        transform: none;
+      }
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .content-column {
+        background: rgba(10, 10, 10, 0.78);
+        box-shadow: -24px 0 80px rgba(0, 0, 0, 0.38);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .content-column {
+        width: min(48vw, 42rem);
+        min-height: 100vh;
+        margin-left: auto;
+        padding: clamp(1.5rem, 3vw, 3rem);
+        border-left: 1px solid rgba(255, 255, 255, 0.24);
+      }
+    }
+
+    @media (max-width: 1023px) {
+      .video-intro {
+        position: relative;
+        left: auto;
+        top: auto;
+        transform: none;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+        max-width: none;
+        padding: 4rem 1rem 1.5rem;
+      }
+
+      .intro-avatar {
+        width: 5.25rem;
+        margin-top: 0;
+      }
+
+      .content-column {
+        width: 100%;
+        min-height: 100vh;
+      }
+    }
   </style>
 </head>
 
 <body class="antialiased text-sm font-mono">
-  <div class="p-4 md:p-12 overflow-hidden">
-    <div class="w-full max-w-xl">
+  <div class="page-shell">
+    <section class="video-rail" aria-label="Featured robot video">
+      <div class="video-stage">
+        <video autoplay muted loop playsinline preload="metadata" src="assets/fastout.mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </section>
+    <section class="video-intro" aria-label="Introduction">
+      <img class="intro-avatar" src="assets/me.jpeg" alt="Chen Yu">
+      <div>
+        <h1 class="font-serif text-5xl md:text-6xl lg:text-7xl leading-none">Hi,<br>I&rsquo;m Chen Yu.</h1>
+        <p class="typing-line font-sans">
+          <span id="typed-text">I am building the future of general-purpose legged robots.</span><span
+            class="typing-cursor" aria-hidden="true"></span>
+        </p>
+      </div>
+    </section>
+
+    <div class="content-column">
       <!-- Header -->
-      <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-        <a class="text-3xl font-serif" href="#home">Chen Yu</a>
+      <header class="flex justify-start md:justify-end items-center mb-6">
         <nav class="flex gap-4">
           <a class="link-ux hover:text-inherit cursor-pointer" onclick="switchTab('research', event)"
             id="nav-research">Research</a>
@@ -148,9 +332,7 @@
               class="mt-8 mb-8 text-[13px] leading-6 text-neutral-600 dark:text-neutral-400 font-normal not-italic font-sans">
               I am a PhD student at Northwestern University (advised by Prof. <a class="link-ux hover:text-inherit"
                 href="https://www.mccormick.northwestern.edu/research-faculty/directory/profiles/kriegman-sam.html">Sam
-                Kriegman</a>) and founder of <a class="link-ux hover:text-inherit"
-                href="https://yodamayda.com/">Yodamayda Robotics</a>, with over five years of hands-on experience in legged robot sim-to-real transfer. My current research focuses on sequential models for
-              universal locomotion control and generative models for robot design. A full list of my publications is
+                Kriegman</a>), with over five years of hands-on experience in legged robot sim-to-real transfer. My current research focuses on cross-embodiment control and modular legged robots. A full list of my publications is
               available on <a class="link-ux hover:text-inherit"
                 href="https://scholar.google.com.hk/citations?hl=en&user=vuLLJ5sAAAAJ">Google Scholar</a>, and all
               software projects can be found on <a class="link-ux hover:text-inherit"
@@ -482,12 +664,6 @@
 
         </div>
       </div>
-
-
-
-
-    </div>
-
     <!-- Writing -->
     <!-- <h2 id="writing" class="font-bold mt-8 mb-2 font-sans text-[13px] tracking-wide">Writing</h2>
       <div class="rounded border p-4" style="border-color:var(--line)">
@@ -522,6 +698,82 @@
   </div>
   <div id="float-preview"><img id="preview-img" src="" alt="" /></div>
 
+  <script>
+    const typedText = document.getElementById('typed-text');
+    const typePhrases = [
+      'I am building the future of general-purpose legged robots.',
+      'I am thinking about what robotics PhD students are for.',
+      'I am doing an internship.',
+      'I am using installation art to question the research system.',
+      'I am working on cross-embodiment control.'
+    ];
+
+    if (typedText) {
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (reducedMotion) {
+        typedText.textContent = typePhrases[0];
+      } else {
+        let phraseIndex = 0;
+        let charIndex = typePhrases[0].length;
+        let deleting = true;
+
+        function typeLoop() {
+          const phrase = typePhrases[phraseIndex];
+          typedText.textContent = phrase.slice(0, charIndex);
+
+          if (!deleting && charIndex === phrase.length) {
+            deleting = true;
+            setTimeout(typeLoop, 1800);
+            return;
+          }
+
+          if (deleting && charIndex === 0) {
+            deleting = false;
+            phraseIndex = (phraseIndex + 1) % typePhrases.length;
+            setTimeout(typeLoop, 300);
+            return;
+          }
+
+          charIndex += deleting ? -1 : 1;
+          setTimeout(typeLoop, deleting ? 24 : 46);
+        }
+
+        setTimeout(typeLoop, 1400);
+      }
+    }
+
+    const introAvatar = document.querySelector('.intro-avatar');
+    const avatarReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (introAvatar && !avatarReducedMotion) {
+      let avatarSpinning = false;
+
+      function rotateAvatar() {
+        if (avatarSpinning) {
+          setTimeout(rotateAvatar, 500);
+          return;
+        }
+
+        const angle = (Math.random() * 90 - 45).toFixed(2);
+        const delay = 900 + Math.random() * 1800;
+        introAvatar.style.setProperty('--avatar-rotation', angle + 'deg');
+        setTimeout(rotateAvatar, delay);
+      }
+
+      introAvatar.addEventListener('mouseenter', () => {
+        avatarSpinning = true;
+        introAvatar.classList.add('is-spinning');
+      });
+
+      introAvatar.addEventListener('mouseleave', () => {
+        avatarSpinning = false;
+        introAvatar.classList.remove('is-spinning');
+      });
+
+      setTimeout(rotateAvatar, 700);
+    }
+  </script>
   <script>
     // Cool mouse-following image preview
     const items = document.querySelectorAll('#research > a');
@@ -626,7 +878,8 @@
       }, 100);
     });
 
-    document.getElementById('y').textContent = new Date().getFullYear();
+    const year = document.getElementById('y');
+    if (year) year.textContent = new Date().getFullYear();
   </script>
 </body>
 
