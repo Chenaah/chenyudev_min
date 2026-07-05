@@ -130,10 +130,21 @@
       position: relative;
       min-height: 100vh;
       overflow-x: hidden;
+      isolation: isolate;
+    }
+
+    .visual-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      display: flex;
+      align-items: center;
+      isolation: isolate;
+      pointer-events: none;
     }
 
     .video-rail {
-      position: fixed;
+      position: absolute;
       inset: 0;
       z-index: 0;
       width: 100vw;
@@ -142,7 +153,7 @@
 
     .content-column {
       position: relative;
-      z-index: 1;
+      z-index: 2;
       padding: 1rem;
       background: rgba(245, 244, 239, 0.86);
       backdrop-filter: blur(28px) saturate(1.2);
@@ -165,30 +176,26 @@
     }
 
     .video-intro {
-      position: fixed;
-      left: clamp(1.5rem, 4vw, 4rem);
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 1;
+      position: relative;
       display: flex;
       align-items: flex-start;
       gap: clamp(1rem, 2vw, 1.75rem);
       max-width: min(44rem, 48vw);
+      margin-left: clamp(1.5rem, 4vw, 4rem);
       color: white;
       text-shadow: 0 2px 24px rgba(0, 0, 0, 0.55);
       pointer-events: none;
     }
 
-    .intro-avatar {
+    .intro-avatar-shell {
       width: clamp(6rem, 9vw, 8.75rem);
       margin-top: 0.15rem;
       aspect-ratio: 1;
       flex: 0 0 auto;
       border-radius: 999px;
-      object-fit: cover;
-      mix-blend-mode: multiply;
-      filter: contrast(1.08) saturate(1.08);
-      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.18);
+      display: block;
+      overflow: hidden;
+      mix-blend-mode: multiply !important;
       transform: rotate(var(--avatar-rotation, 0deg));
       transform-origin: 50% 58%;
       transition: transform 1100ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -196,7 +203,17 @@
       pointer-events: auto;
     }
 
-    .intro-avatar.is-spinning {
+    .intro-avatar {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border-radius: inherit;
+      object-fit: cover;
+      background: transparent;
+      filter: contrast(1.35) brightness(1.08) saturate(1.05);
+    }
+
+    .intro-avatar-shell.is-spinning {
       animation: avatar-spin 260ms linear infinite;
     }
 
@@ -238,7 +255,7 @@
         animation: none;
       }
 
-      .intro-avatar {
+      .intro-avatar-shell {
         animation: none;
         transition: none;
         transform: none;
@@ -263,19 +280,21 @@
     }
 
     @media (max-width: 1023px) {
-      .video-intro {
+      .visual-layer {
         position: relative;
-        left: auto;
-        top: auto;
-        transform: none;
+        min-height: 32rem;
+      }
+
+      .video-intro {
         flex-direction: column;
         align-items: flex-start;
         gap: 1rem;
         max-width: none;
+        margin-left: 0;
         padding: 4rem 1rem 1.5rem;
       }
 
-      .intro-avatar {
+      .intro-avatar-shell {
         width: 5.25rem;
         margin-top: 0;
       }
@@ -290,23 +309,27 @@
 
 <body class="antialiased text-sm font-mono">
   <div class="page-shell">
-    <section class="video-rail" aria-label="Featured robot video">
-      <div class="video-stage">
-        <video autoplay muted loop playsinline preload="metadata" src="assets/fastout.mp4">
-          Your browser does not support the video tag.
-        </video>
-      </div>
-    </section>
-    <section class="video-intro" aria-label="Introduction">
-      <img class="intro-avatar" src="assets/me.jpeg" alt="Chen Yu">
-      <div>
-        <h1 class="font-serif text-5xl md:text-6xl lg:text-7xl leading-none">Hi,<br>I&rsquo;m Chen Yu.</h1>
-        <p class="typing-line font-sans">
-          <span id="typed-text">I am building the future of general-purpose legged robots.</span><span
-            class="typing-cursor" aria-hidden="true"></span>
-        </p>
-      </div>
-    </section>
+    <div class="visual-layer">
+      <section class="video-rail" aria-label="Featured robot video">
+        <div class="video-stage">
+          <video autoplay muted loop playsinline preload="metadata" src="assets/fastout.mp4">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      </section>
+      <section class="video-intro" aria-label="Introduction">
+        <span class="intro-avatar-shell">
+          <img class="intro-avatar" src="assets/me.jpeg" alt="Chen Yu">
+        </span>
+        <div>
+          <h1 class="font-serif text-5xl md:text-6xl lg:text-7xl leading-none">Hi,<br>I&rsquo;m Chen Yu.</h1>
+          <p class="typing-line font-sans">
+            <span id="typed-text">I am building the future of general-purpose legged robots.</span><span
+              class="typing-cursor" aria-hidden="true"></span>
+          </p>
+        </div>
+      </section>
+    </div>
 
     <div class="content-column">
       <!-- Header -->
@@ -743,7 +766,7 @@
       }
     }
 
-    const introAvatar = document.querySelector('.intro-avatar');
+    const introAvatar = document.querySelector('.intro-avatar-shell');
     const avatarReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (introAvatar && !avatarReducedMotion) {
