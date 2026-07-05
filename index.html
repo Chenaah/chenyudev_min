@@ -292,7 +292,7 @@
   <div class="page-shell">
     <section class="video-rail" aria-label="Featured robot video">
       <div class="video-stage">
-        <video autoplay muted loop playsinline preload="metadata" src="assets/fastout.mp4">
+        <video id="background-video" autoplay muted playsinline preload="metadata" src="assets/videos/fastout.mp4">
           Your browser does not support the video tag.
         </video>
       </div>
@@ -699,6 +699,36 @@
   <div id="float-preview"><img id="preview-img" src="" alt="" /></div>
 
   <script>
+    const backgroundVideo = document.getElementById('background-video');
+    const backgroundVideos = [
+      'assets/videos/fastout.mp4',
+      'assets/videos/fastout_installation.mp4'
+    ];
+
+    if (backgroundVideo && backgroundVideos.length > 0) {
+      let backgroundVideoIndex = 0;
+
+      function playBackgroundVideo(index) {
+        backgroundVideoIndex = index % backgroundVideos.length;
+        backgroundVideo.src = backgroundVideos[backgroundVideoIndex];
+        backgroundVideo.load();
+
+        const playPromise = backgroundVideo.play();
+        if (playPromise) {
+          playPromise.catch(() => {
+            // Muted autoplay is usually allowed; if not, the first user gesture can start it.
+          });
+        }
+      }
+
+      function playNextBackgroundVideo() {
+        playBackgroundVideo(backgroundVideoIndex + 1);
+      }
+
+      backgroundVideo.addEventListener('ended', playNextBackgroundVideo);
+      backgroundVideo.addEventListener('error', playNextBackgroundVideo);
+    }
+
     const typedText = document.getElementById('typed-text');
     const typePhrases = [
       'I am building the future of general-purpose legged robots.',
