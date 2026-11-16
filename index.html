@@ -90,7 +90,7 @@
       opacity: 0;
       transform: scale(0.9) translateY(10px);
       transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      width: 480px;
+      width: min(480px, calc(100vw - 40px));
       /* larger preview */
       border-radius: 12px;
       overflow: hidden;
@@ -108,6 +108,8 @@
     #float-preview img {
       width: 100%;
       height: auto;
+      max-height: calc(100vh - 40px);
+      object-fit: contain;
       display: block;
     }
 
@@ -420,6 +422,28 @@
 
             <!-- Publications -->
             <div id="research" class="flex flex-col space-y-4">
+
+              <!-- Paper preview rendered from https://arxiv.org/pdf/2610.13087 -->
+              <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition"
+                href="https://bopi-loco.github.io/" data-thumbnail="thumbnails/bopi.png">
+                <img src="portfolio/bopi_compressed.gif" alt="A humanoid pushing a cart with BOPI"
+                  class="w-28 h-16 object-cover rounded shrink-0" />
+                <div class="flex flex-col gap-1 flex-1 min-w-0">
+                  <div class="flex items-start gap-1 justify-between text-xs w-full">
+                    <div class="flex items-baseline gap-2 grow">
+                      <div class="font-semibold"
+                        title="Belief-Overlap Partial Inversion: Object-Centric Flow Replanning for Humanoid Loco-Manipulation">
+                        Humanoid loco-manipulation with BOPI
+                      </div>
+                    </div>
+                    <div class="text-xs text-[var(--muted)] whitespace-nowrap shrink-0">arXiv, 2026</div>
+                  </div>
+                  <div class="text-xs text-[var(--muted)]">
+                    Object-centric flow replanning lets a humanoid adapt its motion as it learns an unknown cart's
+                    dynamics.
+                  </div>
+                </div>
+              </a>
 
                <a class="flex gap-3 px-3 py-2 hover:bg-[var(--hover)] rounded transition" href="https://arxiv.org/abs/2603.12505"
                 data-thumbnail="thumbnails/breaking.png">
@@ -901,19 +925,15 @@
       });
 
       item.addEventListener('mousemove', (e) => {
-        // center the preview horizontally on the cursor, displace vertically
-        // Get preview width to center it
+        // Center the preview below the cursor and keep it inside the viewport.
+        const margin = 20;
         const previewWidth = preview.offsetWidth;
+        const previewHeight = preview.offsetHeight;
 
-        let x = e.clientX;
-        let y = e.clientY + 20;
-
-        // Check for right edge collision
-        if (x + previewWidth / 2 > window.innerWidth) {
-          x = window.innerWidth - previewWidth / 2 - 20;
-        } else if (x - previewWidth / 2 < 0) {
-          x = previewWidth / 2 + 20;
-        }
+        const x = Math.max(margin, Math.min(e.clientX - previewWidth / 2,
+          window.innerWidth - previewWidth - margin));
+        const y = Math.max(margin, Math.min(e.clientY + margin,
+          window.innerHeight - previewHeight - margin));
 
         preview.style.left = x + 'px';
         preview.style.top = y + 'px';
